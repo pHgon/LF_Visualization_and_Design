@@ -32,27 +32,27 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         if event.key() == QtCore.Qt.Key_Left:
             if(self.angulo_horizontal > 0):
                 self.angulo_horizontal -= 1
-            self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_vertical))) + "_" + ("{0:0>3}".format(str(self.angulo_horizontal))) + ".ppm"))
+            self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm"))
 
             
 
         if event.key() == QtCore.Qt.Key_Right:
             if(self.angulo_horizontal < 14):
                 self.angulo_horizontal += 1
-            self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_vertical))) + "_" + ("{0:0>3}".format(str(self.angulo_horizontal))) + ".ppm"))
+            self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm"))
            
 
         if event.key() == QtCore.Qt.Key_Up:
             if(self.angulo_vertical > 0):
                 self.angulo_vertical -= 1
-            self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_vertical))) + "_" + ("{0:0>3}".format(str(self.angulo_horizontal))) + ".ppm"))
+            self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm"))
             
             
 
         if event.key() == QtCore.Qt.Key_Down:
             if(self.angulo_vertical  < 14):
                 self.angulo_vertical += 1
-            self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_vertical))) + "_" + ("{0:0>3}".format(str(self.angulo_horizontal))) + ".ppm"))
+            self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm"))
             
     
 
