@@ -10,7 +10,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         super(ExampleApp, self).__init__(parent)
         self.angulo_horizontal = 7
         self.angulo_vertical = 7
-        self.pathToPpms = ""
+        self.pathToPpms = "/home/paulo/Downloads/Bikes/Bikes"
         self.grid_x = 20
         self.grid_y = 60
         self.grid_w = 150
@@ -26,21 +26,26 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pathToPpms = str(s)
         self.openppm()
     
+
     def get_vert_ang(self):
         return self.angulo_vertical  
+
 
     def get_horz_ang(self):
         return self.angulo_horizontal
 
+
     def openppm(self):
         self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/00" + str(self.get_vert_ang()) + "_00" + str(self.get_horz_ang()) + ".ppm"))
     
+
     def paintEvent(self, e):
         qp = QPainter()
         qp.begin(self)
         # self.drawRectangles(qp)
         self.drawGrid(qp)
         qp.end()
+
 
     def drawGrid(self, qp):   
         qp.setBrush(QColor(255 , 255, 255))
@@ -55,51 +60,38 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         qp.setBrush(QColor(255, 0, 0))
         qp.drawRect(self.grid_x + int(self.grid_w/15)*self.angulo_horizontal, self.grid_y + int(self.grid_h/15)*self.angulo_vertical, int(self.grid_w/15), int(self.grid_h/15))
             
-
-
-    # def drawRectangles(self, qp):
-      
-    #     col = QColor(0, 0, 0)
-    #     col.setNamedColor('#d4d4d4')
-    #     qp.setPen(col)
-
-    #     qp.setBrush(QColor(200, 0, 0))
-    #     qp.drawRect(10, 15, 90, 60)
-
-    #     qp.setBrush(QColor(255, 80, 0, 160))
-    #     qp.drawRect(130, 15, 90, 60)
-
-    #     qp.setBrush(QColor(25, 0, 90, 200))
-    #     qp.drawRect(250, 15, 90, 60)
     
     def keyPressEvent(self,event):
         if event.key() == QtCore.Qt.Key_Left:
             if(self.angulo_horizontal > 0):
                 self.angulo_horizontal -= 1
-            self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm").scaled(625,434,aspectRatioMode =1))
-
-            
+            self.loadppm() 
 
         if event.key() == QtCore.Qt.Key_Right:
             if(self.angulo_horizontal < 14):
                 self.angulo_horizontal += 1
-            self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm").scaled(625,434,aspectRatioMode =1))
-           
+            self.loadppm()
 
         if event.key() == QtCore.Qt.Key_Up:
             if(self.angulo_vertical > 0):
                 self.angulo_vertical -= 1
-            self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm").scaled(625,434,aspectRatioMode =1))
-            
-            
+            self.loadppm()
 
         if event.key() == QtCore.Qt.Key_Down:
             if(self.angulo_vertical  < 14):
                 self.angulo_vertical += 1
-            self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm").scaled(625,434,aspectRatioMode =1))
+            self.loadppm()
+
         self.l_ang_hoz.setText("x: " + "{0:0>3}".format(str(self.angulo_horizontal)))
         self.l_ang_vert.setText("y: " + "{0:0>3}".format(str(self.angulo_vertical)))
         self.update()
+
+
+    def loadppm(self):
+        act_img = QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm")
+        n_width  = int(act_img.width() * (self.label.width() / act_img.width()))       # Scaling para o tamanho maximo 
+        n_height  = int(act_img.height() * (self.label.height() / act_img.height()))   # permitido dentro do label
+        self.label.setPixmap(act_img.scaled(n_width,n_height,aspectRatioMode =1))
      
 
 def main():
