@@ -15,7 +15,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(850, 0, 511, 651))
+        self.label.setGeometry(QtCore.QRect(320, 0, 1041, 651))
         self.label.setText("")
         self.label.setPixmap(QtGui.QPixmap("../Bikes/Bikes/000_003.ppm"))
         self.label.setAlignment(QtCore.Qt.AlignCenter)
