@@ -1,3 +1,4 @@
+#!/usr/local/bin/python
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QFileDialog
 from PyQt5.QtGui import QPainter, QColor, QBrush
@@ -37,6 +38,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def openppm(self):
         self.label.setPixmap(QtGui.QPixmap(self.pathToPpms + "/00" + str(self.get_vert_ang()) + "_00" + str(self.get_horz_ang()) + ".ppm"))
+        
     
 
     def paintEvent(self, e):
@@ -89,8 +91,9 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def loadppm(self):
         act_img = QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm")
-        n_width  = int(act_img.width() * (self.label.width() / act_img.width()))       # Scaling para o tamanho maximo 
-        n_height  = int(act_img.height() * (self.label.height() / act_img.height()))   # permitido dentro do label
+        #act_img.save("00" + str(self.get_vert_ang()) + "_00" + str(self.get_horz_ang()) + ".png", "PNG")
+        n_width   = int(act_img.width()  * (self.label.width()  / act_img.width()))       # Scaling para o tamanho maximo 
+        n_height  = int(act_img.height() * (self.label.height() / act_img.height()))      # permitido dentro do label
         self.label.setPixmap(act_img.scaled(n_width,n_height,aspectRatioMode =1))
      
 
