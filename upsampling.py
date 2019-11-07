@@ -1,5 +1,7 @@
 from PIL import Image
 import numpy as np
+import statistics
+
 
 def getSaiUpLeft(path):
     img = Image.open(path + "_tempSAIs/0.png")
@@ -49,18 +51,18 @@ def upsampling(path, times):
 
     shape = np_im.shape
 
-    new_image = Image.new('RGB', (shape[1], shape[0]), color = (0,0,0))
+    new_image = Image.new('RGB', (shape[1]*times, shape[0]*times), color = (0,0,0))
 
     new_image.save('test.png')
     new_image_np = np.array(new_image)
 
     print(new_image_np.shape)
 
-    for i in range(new_image_np[0,:]):
-        for j in range(new_image_np[1,:]):
-            for color in range(new_image_np[2,:]):
-                print(new_image_np[i][j][color])
+    for color in range(new_image_np.shape[2]):
+        for i in range(0,new_image_np.shape[0],2):
+            for j in range(0,new_image_np.shape[1],2):
+                #FirstPixel
+                new_image_np[i][j][color] = mean(getSaiUpLeft(path)[i/2][j/2][color], getSaiUp(path)[i/2][j/2][color], getSaiLeft[i/2][j/2][color], np_im[i/2][j/2][color])
             
-
 
 upsampling('/home/thiago/Mestrado_cadeiras/LF_VizualizationApp/', 2)
