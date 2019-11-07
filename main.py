@@ -4,7 +4,11 @@ from PyQt5.QtWidgets import QApplication, QFileDialog
 from PyQt5.QtGui import QPainter, QColor, QBrush
 import sys
 import os
-from lf import Ui_MainWindow 
+from lf import Ui_MainWindow
+import qimage2ndarray
+import img_manipulation as im
+import utils
+import numpy as np
 
 class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -12,8 +16,8 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.angulo_horizontal = 0
         self.angulo_vertical = 0
+        self.pathToPpms = "/home/paulo/Downloads/Bikes/Bikes"  # Caminho so para testes, default=""
         self.pathToPpms = ""
-        #self.pathToPpms = "/home/paulo/Downloads/Bikes/Bikes"  # Caminho so para testes, default=""
 
         if self.pathToPpms:
             self.angulo_horizontal = 7
@@ -26,9 +30,12 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.grid_h = 150
         self.setScreenText()
         self.actionOpen.triggered.connect(self.openFile)
-        # Callback dos botoes
+        # Sinais
         self.pushButton_3.clicked.connect(self.buttonUpscaling2x)
         self.pushButton_4.clicked.connect(self.buttonUpscaling4x)
+        self.horizontalSlider.valueChanged.connect(self.loadppm)
+        self.horizontalSlider_2.valueChanged.connect(self.loadppm)
+        self.horizontalSlider_3.valueChanged.connect(self.loadppm)
     
 
     def setScreenText (self):
@@ -51,14 +58,13 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         act_img = QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm")
         n_width   = int(act_img.width()  * (self.label.width()  / act_img.width()))       # Scaling para o tamanho maximo 
         n_height  = int(act_img.height() * (self.label.height() / act_img.height()))      # permitido dentro do label
+
+        temp_img = qimage2ndarray.rgb_view(act_img.toImage())
+        temp_img = im.brightness(temp_img, 1, -50+self.spinBox_brilho.value())
+        temp_img = qimage2ndarray.array2qimage(temp_img)
+        act_img = QtGui.QPixmap.fromImage(temp_img)
+
         self.label.setPixmap(act_img.scaled(n_width,n_height,aspectRatioMode =1))
-
-
-    def paintEvent(self, e):
-        qp = QPainter()
-        qp.begin(self)
-        self.drawGrid(qp)
-        qp.end()
 
 
     def drawGrid(self, qp):   
@@ -75,6 +81,14 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
             qp.drawRect(self.grid_x + int(self.grid_w/15)*self.angulo_horizontal, self.grid_y + int(self.grid_h/15)*self.angulo_vertical, int(self.grid_w/15), int(self.grid_h/15))
     
     
+# ******************************************* EVENTOS ******************************************* #
+    def paintEvent(self, e):
+        qp = QPainter()
+        qp.begin(self)
+        self.drawGrid(qp)
+        qp.end()
+
+
     def keyPressEvent(self,event):
         if self.pathToPpms:
             if event.key() == QtCore.Qt.Key_Left:
@@ -99,7 +113,21 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.setScreenText()
         self.update()
-     
+
+
+    def mousePressEvent(self, event):
+        pass
+
+
+    def mouseReleaseEvent(self, event):
+        pass
+
+
+    def mouseMoveEvent(self, event):
+        pass
+
+
+# ********************************************************************************************* #
 
     def buttonUpscaling2x(self):
         self.upscaling(2)
@@ -110,7 +138,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
     def upscaling(self, x):
-        if self.isValidSAI():
+        if utils.isValidSAI(self.angulo_horizontal, self.angulo_vertical):
             os.system('rm -R _tempSAIs; mkdir _tempSAIs')
             sai_it = 0
             for y in range (self.angulo_vertical-1, self.angulo_vertical+2):
@@ -120,21 +148,6 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
                     sai_it = sai_it + 1
             # Chama Funcao Upscaling
             #os.system('rm -R _tempSAIs')
-
-
-    # Verifica se a SAI atual possui vizinhos validos
-    def isValidSAI(self):
-        if self.angulo_horizontal == 0 or self.angulo_horizontal == 14:
-           return False
-        if self.angulo_vertical == 0 or self.angulo_vertical == 14:
-            return False
-        if self.angulo_vertical == 1 or self.angulo_vertical == 13:
-            if self.angulo_horizontal < 4 or self.angulo_horizontal > 10:
-                return False
-        if self.angulo_horizontal == 1 or self.angulo_horizontal == 13:
-            if self.angulo_vertical < 3 or self.angulo_vertical > 11:
-                return False
-        return True
         
 
 def main():
