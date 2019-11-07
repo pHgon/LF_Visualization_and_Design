@@ -682,6 +682,12 @@
        <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
        </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>75</number>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -705,7 +711,7 @@
         <number>50</number>
        </property>
        <property name="tracking">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -761,7 +767,7 @@
       </widget>
      </item>
      <item row="2" column="2">
-      <widget class="QSpinBox" name="spinBox_3">
+      <widget class="QSpinBox" name="spinBox_saturacao">
        <property name="font">
         <font>
          <pointsize>10</pointsize>
@@ -774,10 +780,19 @@
         <set>Qt::AlignCenter</set>
        </property>
        <property name="suffix">
-        <string> %</string>
+        <string> </string>
        </property>
        <property name="maximum">
         <number>100</number>
+       </property>
+       <property name="singleStep">
+        <number>1</number>
+       </property>
+       <property name="value">
+        <number>75</number>
+       </property>
+       <property name="displayIntegerBase">
+        <number>10</number>
        </property>
       </widget>
      </item>
@@ -1019,6 +1034,38 @@ Depth Maps</string>
     <hint type="destinationlabel">
      <x>182</x>
      <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_3</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBox_saturacao</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>276</x>
+     <y>310</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>323</x>
+     <y>311</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBox_saturacao</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>horizontalSlider_3</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>327</x>
+     <y>314</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>289</x>
+     <y>310</y>
     </hint>
    </hints>
   </connection>

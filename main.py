@@ -60,7 +60,10 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         n_height  = int(act_img.height() * (self.label.height() / act_img.height()))      # permitido dentro do label
 
         temp_img = qimage2ndarray.rgb_view(act_img.toImage())
-        temp_img = im.brightness(temp_img, 1, -50+self.spinBox_brilho.value())
+
+        temp_img = im.brightness(temp_img, 1, -50 + self.spinBox_brilho.value())
+        temp_img = im.exposure(temp_img, self.spinBox_saturacao.value()/100.)
+
         temp_img = qimage2ndarray.array2qimage(temp_img)
         act_img = QtGui.QPixmap.fromImage(temp_img)
 
