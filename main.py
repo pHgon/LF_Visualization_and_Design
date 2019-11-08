@@ -16,7 +16,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.angulo_horizontal = 0
         self.angulo_vertical = 0
-        self.pathToPpms = "/home/paulo/Downloads/Bikes/Bikes"  # Caminho so para testes, default=""
+        #self.pathToPpms = "/home/paulo/Downloads/Bikes/Bikes"  # Caminho so para testes, default=""
         self.pathToPpms = ""
 
         if self.pathToPpms:
@@ -24,8 +24,8 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.angulo_vertical = 7
             self.loadppm()
 
-        self.grid_x = 240
-        self.grid_y = 65
+        self.grid_x = 261
+        self.grid_y = 61
         self.grid_w = 150
         self.grid_h = 150
         self.setScreenText()
@@ -33,10 +33,11 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         # Sinais
         self.pushButton_3.clicked.connect(self.buttonUpscaling2x)
         self.pushButton_4.clicked.connect(self.buttonUpscaling4x)
-        self.horizontalSlider.valueChanged.connect(self.loadppm)
-        self.horizontalSlider_2.valueChanged.connect(self.loadppm)
-        self.horizontalSlider_3.valueChanged.connect(self.loadppm)
-    
+        self.slider_brilho.valueChanged.connect(self.loadppm)
+        self.slider_contraste.valueChanged.connect(self.loadppm)
+        self.slider_saturacao.valueChanged.connect(self.loadppm)
+        self.slider_nitidez.valueChanged.connect(self.loadppm)
+
 
     def setScreenText (self):
         self.l_ang_hoz.setText("x: " + "{0:0>2}".format(str(self.angulo_horizontal)))
@@ -56,18 +57,30 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
     # Carrega o ppm e ajusta para o tamanho da label
     def loadppm(self):
         act_img = QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm")
-        n_width   = int(act_img.width()  * (self.label.width()  / act_img.width()))       # Scaling para o tamanho maximo 
-        n_height  = int(act_img.height() * (self.label.height() / act_img.height()))      # permitido dentro do label
+        act_img, act_hist = self.applyTransformations(act_img)
 
-        temp_img = qimage2ndarray.rgb_view(act_img.toImage())
+        img_width    = int(act_img.width()  * (self.label.width()  / act_img.width()))       # Scaling para o tamanho maximo 
+        img_height   = int(act_img.height() * (self.label.height() / act_img.height()))      # permitido dentro do label
+        hist_width   = int(act_hist.width()  * (self.label_hist.width()  / act_hist.width()))       # Scaling para o tamanho maximo 
+        hist_height  = int(act_hist.height() * (self.label_hist.height() / act_hist.height()))      # permitido dentro do label
+        
+        self.label.setPixmap(act_img.scaled(img_width,img_height,aspectRatioMode =1))
+        self.label_hist.setPixmap(act_hist.scaled(hist_width-10, hist_height-10))
 
-        temp_img = im.brightness(temp_img, 1, -50 + self.spinBox_brilho.value())
-        temp_img = im.exposure(temp_img, self.spinBox_saturacao.value()/100.)
 
-        temp_img = qimage2ndarray.array2qimage(temp_img)
-        act_img = QtGui.QPixmap.fromImage(temp_img)
-
-        self.label.setPixmap(act_img.scaled(n_width,n_height,aspectRatioMode =1))
+    
+    def applyTransformations(self, img_pixmap):
+        img = qimage2ndarray.rgb_view(img_pixmap.toImage())
+        # Valores dos Fatores
+        f_br = (self.spinBox_brilho.value()+100)/100.
+        f_co = (self.spinBox_contraste.value()+100)/100.
+        f_sh = (self.spinBox_nitidez.value()+100)/100.
+        f_sa = (self.spinBox_saturacao.value()+100)/100.
+        img, hist = im.transformations(img, f_br, f_co, f_sh, f_sa)
+        img  = qimage2ndarray.array2qimage(img)
+        hist = qimage2ndarray.array2qimage(hist)
+        hist = hist.copy(80, 58, 496, 370)
+        return QtGui.QPixmap.fromImage(img), QtGui.QPixmap.fromImage(hist)
 
 
     def drawGrid(self, qp):   
