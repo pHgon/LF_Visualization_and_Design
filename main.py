@@ -16,7 +16,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.angulo_horizontal = 0
         self.angulo_vertical = 0
-        #self.pathToPpms = "/home/paulo/Downloads/Bikes/Bikes"  # Caminho so para testes, default=""
+        self.pathToPpms = "/home/paulo/Downloads/Bikes/Bikes"  # Caminho so para testes, default=""
         self.pathToPpms = ""
 
         if self.pathToPpms:
@@ -25,7 +25,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.loadppm()
 
         self.grid_x = 261
-        self.grid_y = 61
+        self.grid_y = 62
         self.grid_w = 150
         self.grid_h = 150
         self.setScreenText()
@@ -37,6 +37,11 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.slider_contraste.valueChanged.connect(self.loadppm)
         self.slider_saturacao.valueChanged.connect(self.loadppm)
         self.slider_nitidez.valueChanged.connect(self.loadppm)
+        self.radioButton_red.clicked.connect(self.loadppm)
+        self.radioButton_green.clicked.connect(self.loadppm)
+        self.radioButton_blue.clicked.connect(self.loadppm)
+        self.radioButton_maximizar.clicked.connect(self.loadppm)
+        self.radioButton_original.clicked.connect(self.loadppm)
 
 
     def setScreenText (self):
@@ -59,8 +64,11 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         act_img = QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm")
         act_img, act_hist = self.applyTransformations(act_img)
 
-        img_width    = int(act_img.width()  * (self.label.width()  / act_img.width()))       # Scaling para o tamanho maximo 
-        img_height   = int(act_img.height() * (self.label.height() / act_img.height()))      # permitido dentro do label
+        img_width  = act_img.width()
+        img_height = act_img.height()
+        if self.radioButton_maximizar.isChecked():
+            img_width    = int(img_width  * (self.label.width()  / img_width))       # Scaling para o tamanho maximo 
+            img_height   = int(img_height * (self.label.height() / img_height))      # permitido dentro do label
         hist_width   = int(act_hist.width()  * (self.label_hist.width()  / act_hist.width()))       # Scaling para o tamanho maximo 
         hist_height  = int(act_hist.height() * (self.label_hist.height() / act_hist.height()))      # permitido dentro do label
         
@@ -76,7 +84,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         f_co = (self.spinBox_contraste.value()+100)/100.
         f_sh = (self.spinBox_nitidez.value()+100)/100.
         f_sa = (self.spinBox_saturacao.value()+100)/100.
-        img, hist = im.transformations(img, f_br, f_co, f_sh, f_sa)
+        img, hist = im.transformations(img, f_br, f_co, f_sh, f_sa, self.radioButton_red.isChecked(), self.radioButton_green.isChecked(), self.radioButton_blue.isChecked())
         img  = qimage2ndarray.array2qimage(img)
         hist = qimage2ndarray.array2qimage(hist)
         hist = hist.copy(80, 58, 496, 370)
