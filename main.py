@@ -9,6 +9,7 @@ import qimage2ndarray
 import img_manipulation as im
 import utils
 import numpy as np
+import mosca_window
 
 class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -61,6 +62,8 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
     
     # Carrega o ppm e ajusta para o tamanho da label
     def loadppm(self):
+        # form = mosca_window.MoscaWindow()
+        # form.show()
         act_img = QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm")
         act_img, act_hist = self.applyTransformations(act_img)
 
