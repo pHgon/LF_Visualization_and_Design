@@ -13,7 +13,7 @@ class MoscaWindow(QtWidgets.QDialog, Ui_DmoscaView):
     def __init__(self, parent=None):
         super(MoscaWindow, self).__init__(parent)
         self.setupUi(self)
-        self.path = '/home/vwdpinho/Documentos/Bikes/Bikes'
+        self.path = '/home/paulo/Downloads/Bikes/Bikes'
         self.loadMV()
     
     def loadMV(self):
@@ -22,16 +22,19 @@ class MoscaWindow(QtWidgets.QDialog, Ui_DmoscaView):
         a = []
         # w = width -> largura
         # h = height -> altura
-        width = 20
-        height = 20
+        #width = 625
+        #height = 434
+        width = 123
+        height = 86
         for h in range(height):
             for w in range(width):
                 a.append(np.empty([15,15,3]))    
             
         for i in range(15):
             for j in range(15):
-                act_img = QtGui.QPixmap(self.path + "/" + ("{0:0>3}".format(i) + "_" + ("{0:0>3}".format(j)) + ".ppm"))
+                act_img = QtGui.QPixmap(self.path + "/" + ("{0:0>3}".format(i) + "_" + ("{0:0>3}".format(j)) + ".ppm")).scaled(123, 86, aspectRatioMode=1)
                 img_a = qimage2ndarray.rgb_view(act_img.toImage())
+                #print (img_a.shape)
                 for h in range(height):
                     for w in range(width):
                         #a[h*3 + w][i][j] = img_a[h][w]
@@ -77,7 +80,8 @@ class MoscaWindow(QtWidgets.QDialog, Ui_DmoscaView):
         img_width  = int(act_img.width())
         img_height = int(act_img.height())
         #img_m.setRotation(10)
-        self.labelMosca.setPixmap(QtGui.QPixmap.fromImage(img_m).scaled(img_width, img_height, aspectRatioMode=1))
+        QtGui.QPixmap.fromImage(img_m).save("teste.png", "PNG")
+        #self.labelMosca.setPixmap(QtGui.QPixmap.fromImage(img_m).scaled(img_width, img_height, aspectRatioMode=1))
       
 
 
