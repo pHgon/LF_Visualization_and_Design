@@ -20,29 +20,47 @@ class MoscaWindow(QtWidgets.QDialog, Ui_DmoscaView):
         #np_mv = np.empty([271250])
         #print(len(np_mv))
         a = []
-        for w in range(3):
-            for h in range(3):
+        # w = width -> largura
+        # h = height -> altura
+        width = 625
+        height = 434
+        for h in range(height):
+            for w in range(width):
                 a.append(np.empty([15,15,3]))
             
                 for i in range(15):
                     for j in range(15):
                         act_img = QtGui.QPixmap(self.path + "/" + ("{0:0>3}".format(i) + "_" + ("{0:0>3}".format(j)) + ".ppm"))
                         img_a = qimage2ndarray.rgb_view(act_img.toImage())
-                        a[w*3 + h][i][j] = img_a[w][h]
+                        a[h*3 + w][i][j] = img_a[h][w]
             
         # act_img = QtGui.QPixmap(self.path + "/" + ("{0:0>3}".format('7') + "_" + ("{0:0>3}".format('7')) + ".ppm"))
         # img = qimage2ndarray.rgb_view(act_img.toImage())
         # print(img[0][0])
         #np_mv = np.concatenate((np_mv0, np_mv1), axis=1)
-        npa = a[0]
-        for i in range(1,9):
-            npa = np.concatenate((npa,a[i]))
-        npa.reshape((135,15,3))
+        aux = 0
+        for h in range(height):
+            npa = a[h]
+            for w in range(width):
+                npa = np.concatenate((npa, a[w]), axis=1)
+            if aux == 0:
+                img_mosca = npa 
+                aux = 1
+            else:    
+                img_mosca = np.concatenate((img_mosca, npa))
+        #
+        # npa = a[0]
+        # for i in range(1,3):
+        #     npa = np.concatenate((npa,a[i]), axis=1)
+        # for i in range(3,5):
+        #     npa = np.concatenate((npa,a[i]))
+        #npa.reshape((135,15,3))
         # print(len(npa))
         # print(len(npa[0]))
         # print(len(npa[0][0]))
         # print(npa.shape)
-        img_m = qimage2ndarray.array2qimage(npa)
+        #np.transpose(npa)
+        img_m = qimage2ndarray.array2qimage(img_mosca)
         img_width  = int(act_img.width())
         img_height = int(act_img.height())
         #img_m.setRotation(10)
