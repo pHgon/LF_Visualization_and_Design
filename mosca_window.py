@@ -22,17 +22,29 @@ class MoscaWindow(QtWidgets.QDialog, Ui_DmoscaView):
         a = []
         # w = width -> largura
         # h = height -> altura
-        width = 625
-        height = 434
+        width = 20
+        height = 20
         for h in range(height):
             for w in range(width):
-                a.append(np.empty([15,15,3]))
+                a.append(np.empty([15,15,3]))    
             
-                for i in range(15):
-                    for j in range(15):
-                        act_img = QtGui.QPixmap(self.path + "/" + ("{0:0>3}".format(i) + "_" + ("{0:0>3}".format(j)) + ".ppm"))
-                        img_a = qimage2ndarray.rgb_view(act_img.toImage())
-                        a[h*3 + w][i][j] = img_a[h][w]
+        for i in range(15):
+            for j in range(15):
+                act_img = QtGui.QPixmap(self.path + "/" + ("{0:0>3}".format(i) + "_" + ("{0:0>3}".format(j)) + ".ppm"))
+                img_a = qimage2ndarray.rgb_view(act_img.toImage())
+                for h in range(height):
+                    for w in range(width):
+                        #a[h*3 + w][i][j] = img_a[h][w]
+                        a[h*width + w][i][j] = img_a[h][w]
+        # for h in range(height):
+        #     for w in range(width):
+        #         a.append(np.empty([15,15,3]))
+            
+        #         for i in range(15):
+        #             for j in range(15):
+        #                 act_img = QtGui.QPixmap(self.path + "/" + ("{0:0>3}".format(i) + "_" + ("{0:0>3}".format(j)) + ".ppm"))
+        #                 img_a = qimage2ndarray.rgb_view(act_img.toImage())
+        #                 a[h*3 + w][i][j] = img_a[h][w]
             
         # act_img = QtGui.QPixmap(self.path + "/" + ("{0:0>3}".format('7') + "_" + ("{0:0>3}".format('7')) + ".ppm"))
         # img = qimage2ndarray.rgb_view(act_img.toImage())
@@ -40,9 +52,10 @@ class MoscaWindow(QtWidgets.QDialog, Ui_DmoscaView):
         #np_mv = np.concatenate((np_mv0, np_mv1), axis=1)
         aux = 0
         for h in range(height):
-            npa = a[h]
+            npa = a[h*width]
             for w in range(width):
-                npa = np.concatenate((npa, a[w]), axis=1)
+                if w > 0:
+                    npa = np.concatenate((npa, a[h*width + w]), axis=1)
             if aux == 0:
                 img_mosca = npa 
                 aux = 1
