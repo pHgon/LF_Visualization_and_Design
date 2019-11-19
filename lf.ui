@@ -701,7 +701,7 @@
         <set>Qt::AlignCenter</set>
        </property>
        <property name="suffix">
-        <string> </string>
+        <string/>
        </property>
        <property name="minimum">
         <number>-100</number>
@@ -799,7 +799,7 @@
         <set>Qt::AlignCenter</set>
        </property>
        <property name="suffix">
-        <string> </string>
+        <string/>
        </property>
        <property name="minimum">
         <number>-100</number>
@@ -921,7 +921,7 @@ Depth Maps</string>
      <enum>Qt::NoFocus</enum>
     </property>
     <property name="text">
-     <string>ROI Espiral</string>
+     <string>Visão de Mosca</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_6">
@@ -1365,7 +1365,7 @@ Depth Maps</string>
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

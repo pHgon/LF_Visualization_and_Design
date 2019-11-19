@@ -34,6 +34,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         # Sinais
         self.pushButton_3.clicked.connect(self.buttonUpscaling2x)
         self.pushButton_4.clicked.connect(self.buttonUpscaling4x)
+        self.pushButton_5.clicked.connect(self.mosca)
         self.slider_brilho.valueChanged.connect(self.loadppm)
         self.slider_contraste.valueChanged.connect(self.loadppm)
         self.slider_saturacao.valueChanged.connect(self.loadppm)
@@ -175,7 +176,10 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
                     sai_it = sai_it + 1
             # Chama Funcao Upscaling
             #os.system('rm -R _tempSAIs')
-        
+    
+    def mosca(self):
+        m = mosca_window.MoscaWindow()
+        m.loadMV(self.pathToPpms, 0.5)
 
 def main():
     app = QApplication(sys.argv)
