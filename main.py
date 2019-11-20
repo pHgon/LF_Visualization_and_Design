@@ -7,6 +7,7 @@ import os
 from lf import Ui_MainWindow
 import qimage2ndarray
 import img_manipulation as im
+import upsampling as us
 import utils
 import numpy as np
 import mosca_window
@@ -17,9 +18,9 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.angulo_horizontal = 0
         self.angulo_vertical = 0
-        #self.pathToPpms = "/home/stormtrooper/Thiago/Mestrado/Bikes/Bikes"
+        self.pathToPpms = "/home/paulo/Downloads/Bikes/Bikes"
         # Caminho so para testes, default=""
-        self.pathToPpms = ""
+        #self.pathToPpms = ""
 
         if self.pathToPpms:
             self.angulo_horizontal = 7
@@ -173,15 +174,16 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def upscaling(self, x):
         if utils.isValidSAI(self.angulo_horizontal, self.angulo_vertical):
-            os.system('rm -R _tempSAIs; mkdir _tempSAIs')
-            sai_it = 0
+            #sai_it = 0
+            l = []
             for y in range (self.angulo_vertical-1, self.angulo_vertical+2):
                 for x in range (self.angulo_horizontal-1, self.angulo_horizontal+2):
-                    act_img = QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(x))) + "_" + ("{0:0>3}".format(str(y))) + ".ppm")
-                    act_img.save("_tempSAIs/" + str(sai_it) + ".png", "PNG")
-                    sai_it = sai_it + 1
+                    img = QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(x))) + "_" + ("{0:0>3}".format(str(y))) + ".ppm")
+                    l.append(qimage2ndarray.rgb_view(img.toImage()))
+                    #sai_it = sai_it + 1
             # Chama Funcao Upscaling
-            #os.system('rm -R _tempSAIs')
+            us.upsampling(l, 2)
+
     
     def mosca(self):
         m = mosca_window.MoscaWindow()
