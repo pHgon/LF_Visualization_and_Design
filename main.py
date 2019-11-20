@@ -18,7 +18,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.angulo_horizontal = 0
         self.angulo_vertical = 0
         self.pathToPpms = "/home/paulo/Downloads/Bikes/Bikes"  # Caminho so para testes, default=""
-        self.pathToPpms = ""
+        #self.pathToPpms = ""
 
         if self.pathToPpms:
             self.angulo_horizontal = 7
@@ -32,6 +32,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setScreenText()
         self.actionOpen.triggered.connect(self.openFile)
         # Sinais
+        self.pushButton.clicked.connect(self.buttonDepthMap)
         self.pushButton_3.clicked.connect(self.buttonUpscaling2x)
         self.pushButton_4.clicked.connect(self.buttonUpscaling4x)
         self.pushButton_5.clicked.connect(self.mosca)
@@ -156,6 +157,10 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 # ********************************************************************************************* #
+    def buttonDepthMap(self):
+        img1 = QtGui.QPixmap(self.pathToPpms + "/007_007.ppm")
+        img2 = QtGui.QPixmap(self.pathToPpms + "/007_002.ppm")
+        im.depthmap(qimage2ndarray.rgb_view(img1.toImage()), qimage2ndarray.rgb_view(img2.toImage()))
 
     def buttonUpscaling2x(self):
         self.upscaling(2)
