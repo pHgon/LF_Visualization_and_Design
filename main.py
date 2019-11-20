@@ -17,8 +17,9 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.angulo_horizontal = 0
         self.angulo_vertical = 0
-        self.pathToPpms = "/home/paulo/Downloads/Bikes/Bikes"  # Caminho so para testes, default=""
-        #self.pathToPpms = ""
+        #self.pathToPpms = "/home/stormtrooper/Thiago/Mestrado/Bikes/Bikes"
+        # Caminho so para testes, default=""
+        self.pathToPpms = ""
 
         if self.pathToPpms:
             self.angulo_horizontal = 7
@@ -158,8 +159,8 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
 # ********************************************************************************************* #
     def buttonDepthMap(self):
-        img1 = QtGui.QPixmap(self.pathToPpms + "/007_007.ppm")
-        img2 = QtGui.QPixmap(self.pathToPpms + "/007_002.ppm")
+        img1 = QtGui.QPixmap(self.pathToPpms + "/002_007.ppm")
+        img2 = QtGui.QPixmap(self.pathToPpms + "/009_007.ppm")
         im.depthmap(qimage2ndarray.rgb_view(img1.toImage()), qimage2ndarray.rgb_view(img2.toImage()))
 
     def buttonUpscaling2x(self):
