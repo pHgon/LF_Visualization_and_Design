@@ -60,7 +60,7 @@ class MoscaWindow(QtWidgets.QDialog, Ui_DmoscaView):
         img_m = qimage2ndarray.array2qimage(img_mosca)
         
        
-        QtGui.QPixmap.fromImage(img_m).save("teste.png", "PNG")
+        QtGui.QPixmap.fromImage(img_m).save("visao_de_mosca.png", "PNG")
         #self.labelMosca.setPixmap(QtGui.QPixmap.fromImage(img_m).scaled(img_width, img_height, aspectRatioMode=1))
       
 
