@@ -435,7 +435,7 @@
    <property name="enabled">
     <bool>true</bool>
    </property>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="label_tela">
     <property name="geometry">
      <rect>
       <x>440</x>
@@ -542,7 +542,7 @@
      <number>0</number>
     </property>
    </widget>
-   <widget class="QGroupBox" name="groupBox_2">
+   <widget class="QGroupBox" name="groupBox_cores">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -596,28 +596,28 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_brilho">
        <property name="text">
-        <string>Brilho</string>
+        <string>Brightness</string>
        </property>
       </widget>
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_nitidez">
        <property name="text">
-        <string>Nitidez</string>
+        <string>Sharpness</string>
        </property>
       </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_contraste">
        <property name="text">
-        <string>Contraste</string>
+        <string>Contrast</string>
        </property>
       </widget>
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="label_saturacao">
        <property name="text">
-        <string>Saturação</string>
+        <string>Saturation</string>
        </property>
       </widget>
      </item>
@@ -748,7 +748,7 @@
       </widget>
      </item>
      <item row="0" column="0">
-      <widget class="QLabel" name="label_11">
+      <widget class="QLabel" name="label_text_cores">
        <property name="font">
         <font>
          <family>FreeMono</family>
@@ -762,7 +762,7 @@
         <enum>Qt::LeftToRight</enum>
        </property>
        <property name="text">
-        <string>Cores</string>
+        <string>Colors</string>
        </property>
       </widget>
      </item>
@@ -817,11 +817,11 @@
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="pushButton_depthmap">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>430</y>
+      <x>30</x>
+      <y>450</y>
       <width>141</width>
       <height>61</height>
      </rect>
@@ -830,15 +830,15 @@
      <enum>Qt::NoFocus</enum>
     </property>
     <property name="text">
-     <string>Gerar Depth Map</string>
+     <string>DepthMap</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="pushButton_alldepthmaps">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>430</y>
-      <width>141</width>
+      <x>220</x>
+      <y>550</y>
+      <width>131</width>
       <height>61</height>
      </rect>
     </property>
@@ -869,19 +869,18 @@
      <bool>false</bool>
     </property>
     <property name="text">
-     <string>Gerar todos
-Depth Maps</string>
+     <string>Disparity</string>
     </property>
     <property name="checkable">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="pushButton_upsampling">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>510</y>
-      <width>141</width>
+      <x>210</x>
+      <y>450</y>
+      <width>131</width>
       <height>61</height>
      </rect>
     </property>
@@ -889,55 +888,7 @@ Depth Maps</string>
      <enum>Qt::NoFocus</enum>
     </property>
     <property name="text">
-     <string>Upscaling 2x</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_4">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>510</y>
-      <width>141</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="text">
-     <string>Upscaling 4x</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_5">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>590</y>
-      <width>141</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="text">
-     <string>Visão de Mosca</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_6">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>590</y>
-      <width>141</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="text">
-     <string>ROI ZigZag</string>
+     <string>Upsampling</string>
     </property>
    </widget>
    <widget class="QLabel" name="l_ang_hoz">
@@ -1083,7 +1034,7 @@ Depth Maps</string>
      <number>0</number>
     </property>
    </widget>
-   <widget class="QLabel" name="label_9">
+   <widget class="QLabel" name="label_text_histograma">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -1101,10 +1052,10 @@ Depth Maps</string>
      </font>
     </property>
     <property name="text">
-     <string>Histograma</string>
+     <string>Histogram</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_10">
+   <widget class="QLabel" name="label_text_minimapa">
     <property name="geometry">
      <rect>
       <x>278</x>
@@ -1122,7 +1073,7 @@ Depth Maps</string>
      </font>
     </property>
     <property name="text">
-     <string>Minimapa</string>
+     <string>Minimap</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="radioButton_red">
@@ -1302,12 +1253,12 @@ Depth Maps</string>
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_12">
+   <widget class="QLabel" name="label_text_exibicao">
     <property name="geometry">
      <rect>
       <x>30</x>
       <y>0</y>
-      <width>121</width>
+      <width>141</width>
       <height>51</height>
      </rect>
     </property>
@@ -1320,7 +1271,7 @@ Depth Maps</string>
      </font>
     </property>
     <property name="text">
-     <string>Exibição</string>
+     <string>Exibition</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="radioButton_original">
@@ -1352,12 +1303,100 @@ Depth Maps</string>
      <enum>Qt::NoFocus</enum>
     </property>
     <property name="text">
-     <string>Maximizar</string>
+     <string>Maximize</string>
     </property>
     <property name="checked">
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>550</y>
+      <width>151</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QRadioButton" name="radioButton_zigzag">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>77</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>ZigZag</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radioButton_espiral">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>70</y>
+       <width>77</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>Spiral</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_roi_zigzag">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>0</y>
+       <width>131</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>Region Of
+Interest</string>
+     </property>
+    </widget>
+   </widget>
+   <zorder>label_tela</zorder>
+   <zorder>groupBox_cores</zorder>
+   <zorder>pushButton_depthmap</zorder>
+   <zorder>pushButton_alldepthmaps</zorder>
+   <zorder>pushButton_upsampling</zorder>
+   <zorder>l_ang_hoz</zorder>
+   <zorder>l_ang_ver</zorder>
+   <zorder>label_hist</zorder>
+   <zorder>label_text_histograma</zorder>
+   <zorder>label_text_minimapa</zorder>
+   <zorder>radioButton_red</zorder>
+   <zorder>radioButton_green</zorder>
+   <zorder>radioButton_blue</zorder>
+   <zorder>radioButton_original</zorder>
+   <zorder>radioButton_maximizar</zorder>
+   <zorder>label_text_exibicao</zorder>
+   <zorder>frame</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -1365,7 +1404,7 @@ Depth Maps</string>
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1411,12 +1450,12 @@ Depth Maps</string>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>336</x>
-     <y>291</y>
+     <x>398</x>
+     <y>312</y>
     </hint>
     <hint type="destinationlabel">
-     <x>184</x>
-     <y>292</y>
+     <x>292</x>
+     <y>309</y>
     </hint>
    </hints>
   </connection>
@@ -1427,12 +1466,12 @@ Depth Maps</string>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>276</x>
-     <y>365</y>
+     <x>335</x>
+     <y>387</y>
     </hint>
     <hint type="destinationlabel">
-     <x>323</x>
-     <y>364</y>
+     <x>398</x>
+     <y>390</y>
     </hint>
    </hints>
   </connection>
@@ -1443,12 +1482,12 @@ Depth Maps</string>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>327</x>
-     <y>367</y>
+     <x>398</x>
+     <y>390</y>
     </hint>
     <hint type="destinationlabel">
-     <x>289</x>
-     <y>365</y>
+     <x>335</x>
+     <y>387</y>
     </hint>
    </hints>
   </connection>
@@ -1459,8 +1498,8 @@ Depth Maps</string>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>288</x>
-     <y>316</y>
+     <x>335</x>
+     <y>335</y>
     </hint>
     <hint type="destinationlabel">
      <x>345</x>
@@ -1475,12 +1514,12 @@ Depth Maps</string>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>330</x>
-     <y>319</y>
+     <x>398</x>
+     <y>338</y>
     </hint>
     <hint type="destinationlabel">
-     <x>282</x>
-     <y>319</y>
+     <x>335</x>
+     <y>335</y>
     </hint>
    </hints>
   </connection>
@@ -1491,12 +1530,12 @@ Depth Maps</string>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>275</x>
-     <y>343</y>
+     <x>335</x>
+     <y>361</y>
     </hint>
     <hint type="destinationlabel">
-     <x>337</x>
-     <y>337</y>
+     <x>398</x>
+     <y>364</y>
     </hint>
    </hints>
   </connection>
@@ -1507,12 +1546,12 @@ Depth Maps</string>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>339</x>
-     <y>342</y>
+     <x>398</x>
+     <y>364</y>
     </hint>
     <hint type="destinationlabel">
-     <x>300</x>
-     <y>342</y>
+     <x>335</x>
+     <y>361</y>
     </hint>
    </hints>
   </connection>

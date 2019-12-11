@@ -2,25 +2,43 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QFileDialog
 from PyQt5.QtGui import QPainter, QColor, QBrush
+
 import sys
 import os
-from lf import Ui_MainWindow
 import qimage2ndarray
-import img_manipulation as im
-import upsampling as us
-import utils
 import numpy as np
-import mosca_window
 
-class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
+# My GUI frames
+from frames.mainframe import Ui_MainWindow
+# My Functions
+import functions.utils
+import functions.img_manipulation as im
+import functions.upsampling as us
+import functions.mosca_window
+
+
+
+def main():
+    app = QApplication(sys.argv)
+    form = MainFrame()
+    form.show()
+    sys.exit(app.exec_())
+
+
+class Janela(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
-        super(ExampleApp, self).__init__(parent)
+        super(Janela, self).__init__(parent)
+        self.setupUi(self)
+
+class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
+    def __init__(self, parent=None):
+        super(MainFrame, self).__init__(parent)
         self.setupUi(self)
         self.angulo_horizontal = 0
         self.angulo_vertical = 0
-        self.pathToPpms = "/Fountain_Vincent2/Fountain_Vincent2"
+        self.pathToPpms = "/home/paulo/Downloads/lf_datasets/Fountain_Vincent2/Fountain_Vincent2"
         # Caminho so para testes, default=""
-        #self.pathToPpms = ""
+        self.pathToPpms = ""
 
         if self.pathToPpms:
             self.angulo_horizontal = 7
@@ -34,10 +52,10 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setScreenText()
         self.actionOpen.triggered.connect(self.openFile)
         # Sinais
-        self.pushButton.clicked.connect(self.buttonDepthMap)
-        self.pushButton_3.clicked.connect(self.buttonUpscaling2x)
-        self.pushButton_4.clicked.connect(self.buttonUpscaling4x)
-        self.pushButton_5.clicked.connect(self.mosca)
+        self.pushButton_depthmap.clicked.connect(self.buttonDepthMap)
+        #self.pushButton_up2x.clicked.connect(self.buttonUpscaling2x)
+        #self.pushButton_up4x.clicked.connect(self.buttonUpscaling4x)
+
         self.slider_brilho.valueChanged.connect(self.loadppm)
         self.slider_contraste.valueChanged.connect(self.loadppm)
         self.slider_saturacao.valueChanged.connect(self.loadppm)
@@ -47,6 +65,10 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.radioButton_blue.clicked.connect(self.loadppm)
         self.radioButton_maximizar.clicked.connect(self.loadppm)
         self.radioButton_original.clicked.connect(self.loadppm)
+
+        #self.pushButton_roi_zigzag.clicked.connect(self.teste_janela)
+        #self.dialog = Janela(self)
+
 
 
     def setScreenText (self):
@@ -69,17 +91,18 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         # form = mosca_window.MoscaWindow()
         # form.show()
         act_img = QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm")
+        #act_img = QtGui.QPixmap(self.pathToPpms + "/" + str(self.angulo_horizontal) + "_" + str(self.angulo_vertical) + ".png")
         act_img, act_hist = self.applyTransformations(act_img)
 
         img_width  = act_img.width()
         img_height = act_img.height()
         if self.radioButton_maximizar.isChecked():
-            img_width    = int(img_width  * (self.label.width()  / img_width))       # Scaling para o tamanho maximo 
-            img_height   = int(img_height * (self.label.height() / img_height))      # permitido dentro do label
+            img_width    = int(img_width  * (self.label_tela.width()  / img_width))       # Scaling para o tamanho maximo 
+            img_height   = int(img_height * (self.label_tela.height() / img_height))      # permitido dentro do label
         hist_width   = int(act_hist.width()  * (self.label_hist.width()  / act_hist.width()))       # Scaling para o tamanho maximo 
         hist_height  = int(act_hist.height() * (self.label_hist.height() / act_hist.height()))      # permitido dentro do label
         
-        self.label.setPixmap(act_img.scaled(img_width,img_height,aspectRatioMode =1))
+        self.label_tela.setPixmap(act_img.scaled(img_width,img_height,aspectRatioMode =1))
         self.label_hist.setPixmap(act_hist.scaled(hist_width-10, hist_height-10))
 
 
@@ -158,7 +181,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         pass
 
 
-# ********************************************************************************************* #
+# ****************************************** BOTÕES ******************************************* #
     def buttonDepthMap(self):
         img1 = QtGui.QPixmap(self.pathToPpms + "/002_007.ppm")
         img2 = QtGui.QPixmap(self.pathToPpms + "/009_007.ppm")
@@ -187,13 +210,11 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def mosca(self):
         m = mosca_window.MoscaWindow()
-        m.loadMV(self.pathToPpms, 0.5)
+        m.loadMV(self.pathToPpms, 1.)
 
-def main():
-    app = QApplication(sys.argv)
-    form = ExampleApp()
-    form.show()
-    app.exec_()
+
+    def teste_janela(self):
+        self.dialog.show()
 
 
 if __name__ == '__main__':
