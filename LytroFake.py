@@ -30,32 +30,43 @@ class Janela(QtWidgets.QMainWindow, Ui_MainWindow):
         super(Janela, self).__init__(parent)
         self.setupUi(self)
 
+
 class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainFrame, self).__init__(parent)
         self.setupUi(self)
-        self.angulo_horizontal = 0
-        self.angulo_vertical = 0
+
+        self.matrix_rgb = [[0 for x in range(15)]for y in range(15)]  # Matriz que guarda todos os ppms em rgb_view
+        self.ang_hor = 0
+        self.ang_ver = 0
         self.pathToPpms = "/home/paulo/Downloads/lf_datasets/Fountain_Vincent2/Fountain_Vincent2"
         # Caminho so para testes, default=""
-        self.pathToPpms = ""
+        #self.pathToPpms = ""
 
         if self.pathToPpms:
-            self.angulo_horizontal = 7
-            self.angulo_vertical = 7
-            self.loadppm()
+            self.ang_hor = 7
+            self.ang_ver = 7
+            self.openppms()
 
         self.grid_x = 261
         self.grid_y = 62
         self.grid_w = 150
         self.grid_h = 150
+        
+        self.resetUi()
+
+        #self.dialog = Janela(self)
+    
+
+    def resetUi(self):
+        self.setupUi(self)
         self.setScreenText()
         self.actionOpen.triggered.connect(self.openFile)
         # Sinais
+        self.pushButton_reset.clicked.connect(self.resetUi)
         self.pushButton_depthmap.clicked.connect(self.buttonDepthMap)
         #self.pushButton_up2x.clicked.connect(self.buttonUpscaling2x)
         #self.pushButton_up4x.clicked.connect(self.buttonUpscaling4x)
-
         self.slider_brilho.valueChanged.connect(self.loadppm)
         self.slider_contraste.valueChanged.connect(self.loadppm)
         self.slider_saturacao.valueChanged.connect(self.loadppm)
@@ -65,56 +76,55 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.radioButton_blue.clicked.connect(self.loadppm)
         self.radioButton_maximizar.clicked.connect(self.loadppm)
         self.radioButton_original.clicked.connect(self.loadppm)
-
         #self.pushButton_roi_zigzag.clicked.connect(self.teste_janela)
-        #self.dialog = Janela(self)
-
-
-
-    def setScreenText (self):
-        self.l_ang_hoz.setText("x: " + "{0:0>2}".format(str(self.angulo_horizontal)))
-        self.l_ang_ver.setText("y: " + "{0:0>2}".format(str(self.angulo_vertical)))
+        self.loadppm()
 
 
     def openFile(self):
         s = QFileDialog.getExistingDirectory(self, "Open a folder", "./")
         self.pathToPpms = str(s)
-        self.angulo_horizontal = 7
-        self.angulo_vertical = 7
+        self.resetUi()
+        self.ang_hor = 7
+        self.ang_ver = 7
         self.setScreenText()
-        self.loadppm()
+        self.openppms()
         self.update()
 
-    
+
+    # Carrega todos os ppms e indexa na matriz
+    def openppms(self):
+        for y in range(0,15):
+            for x in range (0,15):
+                self.matrix_rgb[x][y] = qimage2ndarray.rgb_view(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(x))) + "_" + ("{0:0>3}".format(str(y))) + ".ppm").toImage())
+        self.loadppm()
+
+
     # Carrega o ppm e ajusta para o tamanho da label
     def loadppm(self):
-        # form = mosca_window.MoscaWindow()
-        # form.show()
-        act_img = QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(self.angulo_horizontal))) + "_" + ("{0:0>3}".format(str(self.angulo_vertical))) + ".ppm")
-        #act_img = QtGui.QPixmap(self.pathToPpms + "/" + str(self.angulo_horizontal) + "_" + str(self.angulo_vertical) + ".png")
-        act_img, act_hist = self.applyTransformations(act_img)
+        act_img, act_hist = self.applyTransformations()
 
         img_width  = act_img.width()
         img_height = act_img.height()
         if self.radioButton_maximizar.isChecked():
-            img_width    = int(img_width  * (self.label_tela.width()  / img_width))       # Scaling para o tamanho maximo 
-            img_height   = int(img_height * (self.label_tela.height() / img_height))      # permitido dentro do label
+            img_width    = int(img_width  * (self.label_tela.width()  / img_width))                 # Scaling para o tamanho maximo 
+            img_height   = int(img_height * (self.label_tela.height() / img_height))                # permitido dentro do label
         hist_width   = int(act_hist.width()  * (self.label_hist.width()  / act_hist.width()))       # Scaling para o tamanho maximo 
         hist_height  = int(act_hist.height() * (self.label_hist.height() / act_hist.height()))      # permitido dentro do label
-        
+
         self.label_tela.setPixmap(act_img.scaled(img_width,img_height,aspectRatioMode =1))
         self.label_hist.setPixmap(act_hist.scaled(hist_width-10, hist_height-10))
 
 
     
-    def applyTransformations(self, img_pixmap):
-        img = qimage2ndarray.rgb_view(img_pixmap.toImage())
+    def applyTransformations(self):
+        img = self.matrix_rgb[self.ang_hor][self.ang_ver]
         # Valores dos Fatores
         f_br = (self.spinBox_brilho.value()+100)/100.
         f_co = (self.spinBox_contraste.value()+100)/100.
         f_sh = (self.spinBox_nitidez.value()+100)/100.
         f_sa = (self.spinBox_saturacao.value()+100)/100.
         img, hist = im.transformations(img, f_br, f_co, f_sh, f_sa, self.radioButton_red.isChecked(), self.radioButton_green.isChecked(), self.radioButton_blue.isChecked())
+        #self.matrix_rgb[self.ang_hor][self.ang_ver] = img
         img  = qimage2ndarray.array2qimage(img)
         hist = qimage2ndarray.array2qimage(hist)
         hist = hist.copy(80, 58, 496, 370)
@@ -132,7 +142,7 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             qp.drawLine(self.grid_x, i, self.grid_x + self.grid_w, i)
         qp.setBrush(QColor(255, 0, 0))
         if self.pathToPpms:
-            qp.drawRect(self.grid_x + int(self.grid_w/15)*self.angulo_horizontal, self.grid_y + int(self.grid_h/15)*self.angulo_vertical, int(self.grid_w/15), int(self.grid_h/15))
+            qp.drawRect(self.grid_x + int(self.grid_w/15)*self.ang_hor, self.grid_y + int(self.grid_h/15)*self.ang_ver, int(self.grid_w/15), int(self.grid_h/15))
     
     
 # ******************************************* EVENTOS ******************************************* #
@@ -146,23 +156,23 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
     def keyPressEvent(self,event):
         if self.pathToPpms:
             if event.key() == QtCore.Qt.Key_Left:
-                if(self.angulo_horizontal > 0):
-                    self.angulo_horizontal -= 1
+                if(self.ang_hor > 0):
+                    self.ang_hor -= 1
                 self.loadppm() 
 
             if event.key() == QtCore.Qt.Key_Right:
-                if(self.angulo_horizontal < 14):
-                    self.angulo_horizontal += 1
+                if(self.ang_hor < 14):
+                    self.ang_hor += 1
                 self.loadppm()
 
             if event.key() == QtCore.Qt.Key_Up:
-                if(self.angulo_vertical > 0):
-                    self.angulo_vertical -= 1
+                if(self.ang_ver > 0):
+                    self.ang_ver -= 1
                 self.loadppm()
 
             if event.key() == QtCore.Qt.Key_Down:
-                if(self.angulo_vertical  < 14):
-                    self.angulo_vertical += 1
+                if(self.ang_ver  < 14):
+                    self.ang_ver += 1
                 self.loadppm()
 
             self.setScreenText()
@@ -187,6 +197,7 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         img2 = QtGui.QPixmap(self.pathToPpms + "/009_007.ppm")
         im.depthmap(qimage2ndarray.rgb_view(img1.toImage()), qimage2ndarray.rgb_view(img2.toImage()))
 
+
     def buttonUpscaling2x(self):
         self.upscaling(2)
 
@@ -196,11 +207,11 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
     def upscaling(self, x):
-        if utils.isValidSAI(self.angulo_horizontal, self.angulo_vertical):
+        if utils.isValidSAI(self.ang_hor, self.ang_ver):
             #sai_it = 0
             l = []
-            for y in range (self.angulo_vertical-1, self.angulo_vertical+2):
-                for x in range (self.angulo_horizontal-1, self.angulo_horizontal+2):
+            for y in range (self.ang_ver-1, self.ang_ver+2):
+                for x in range (self.ang_hor-1, self.ang_hor+2):
                     img = QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(x))) + "_" + ("{0:0>3}".format(str(y))) + ".ppm")
                     l.append(qimage2ndarray.rgb_view(img.toImage()))
                     #sai_it = sai_it + 1
@@ -211,6 +222,11 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
     def mosca(self):
         m = mosca_window.MoscaWindow()
         m.loadMV(self.pathToPpms, 1.)
+
+
+    def setScreenText (self):
+        self.l_ang_hoz.setText("x: " + "{0:0>2}".format(str(self.ang_hor)))
+        self.l_ang_ver.setText("y: " + "{0:0>2}".format(str(self.ang_ver)))
 
 
     def teste_janela(self):

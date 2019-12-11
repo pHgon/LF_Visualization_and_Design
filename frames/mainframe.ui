@@ -546,7 +546,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>210</y>
+      <y>220</y>
       <width>391</width>
       <height>171</height>
      </rect>
@@ -593,20 +593,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_brilho">
-       <property name="text">
-        <string>Brightness</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_nitidez">
-       <property name="text">
-        <string>Sharpness</string>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_contraste">
        <property name="text">
@@ -614,10 +600,56 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_saturacao">
+     <item row="3" column="1">
+      <widget class="QSlider" name="slider_nitidez">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="minimum">
+        <number>-100</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>0</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_brilho">
        <property name="text">
-        <string>Saturation</string>
+        <string>Brightness</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QSpinBox" name="spinBox_contraste">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="suffix">
+        <string/>
+       </property>
+       <property name="minimum">
+        <number>-100</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>0</number>
        </property>
       </widget>
      </item>
@@ -640,10 +672,28 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QSlider" name="slider_saturacao">
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_saturacao">
+       <property name="text">
+        <string>Saturation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QSpinBox" name="spinBox_brilho">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="suffix">
+        <string/>
        </property>
        <property name="minimum">
         <number>-100</number>
@@ -654,8 +704,8 @@
        <property name="value">
         <number>0</number>
        </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+       <property name="displayIntegerBase">
+        <number>10</number>
        </property>
       </widget>
      </item>
@@ -684,6 +734,32 @@
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_nitidez">
+       <property name="text">
+        <string>Sharpness</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_text_cores">
+       <property name="font">
+        <font>
+         <family>FreeMono</family>
+         <pointsize>19</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+         <stylestrategy>PreferAntialias</stylestrategy>
+        </font>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text">
+        <string>Colors</string>
        </property>
       </widget>
      </item>
@@ -720,54 +796,8 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="2">
-      <widget class="QSpinBox" name="spinBox_contraste">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="suffix">
-        <string/>
-       </property>
-       <property name="minimum">
-        <number>-100</number>
-       </property>
-       <property name="maximum">
-        <number>100</number>
-       </property>
-       <property name="value">
-        <number>0</number>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_text_cores">
-       <property name="font">
-        <font>
-         <family>FreeMono</family>
-         <pointsize>19</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-         <stylestrategy>PreferAntialias</stylestrategy>
-        </font>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="text">
-        <string>Colors</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QSlider" name="slider_nitidez">
+     <item row="4" column="1">
+      <widget class="QSlider" name="slider_saturacao">
        <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
        </property>
@@ -785,33 +815,13 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="QSpinBox" name="spinBox_brilho">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="pushButton_reset">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
        </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="suffix">
-        <string/>
-       </property>
-       <property name="minimum">
-        <number>-100</number>
-       </property>
-       <property name="maximum">
-        <number>100</number>
-       </property>
-       <property name="value">
-        <number>0</number>
-       </property>
-       <property name="displayIntegerBase">
-        <number>10</number>
+       <property name="text">
+        <string>Reset</string>
        </property>
       </widget>
      </item>
@@ -820,9 +830,9 @@
    <widget class="QPushButton" name="pushButton_depthmap">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>450</y>
-      <width>141</width>
+      <x>50</x>
+      <y>430</y>
+      <width>131</width>
       <height>61</height>
      </rect>
     </property>
@@ -836,8 +846,8 @@
    <widget class="QPushButton" name="pushButton_alldepthmaps">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>550</y>
+      <x>260</x>
+      <y>430</y>
       <width>131</width>
       <height>61</height>
      </rect>
@@ -873,22 +883,6 @@
     </property>
     <property name="checkable">
      <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_upsampling">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>450</y>
-      <width>131</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="text">
-     <string>Upsampling</string>
     </property>
    </widget>
    <widget class="QLabel" name="l_ang_hoz">
@@ -1258,7 +1252,7 @@
      <rect>
       <x>30</x>
       <y>0</y>
-      <width>141</width>
+      <width>151</width>
       <height>51</height>
      </rect>
     </property>
@@ -1271,7 +1265,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Exibition</string>
+     <string>Exhibition</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="radioButton_original">
@@ -1309,11 +1303,11 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QFrame" name="frame">
+   <widget class="QFrame" name="frame_roi">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>550</y>
+      <x>40</x>
+      <y>530</y>
       <width>151</width>
       <height>91</height>
      </rect>
@@ -1380,11 +1374,77 @@ Interest</string>
      </property>
     </widget>
    </widget>
+   <widget class="QFrame" name="frame_upsampling">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>520</y>
+      <width>171</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QRadioButton" name="radioButton_up2x">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>80</y>
+       <width>83</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>2x</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radioButton_up4x">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>80</y>
+       <width>83</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>4x</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_upsampling">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>10</y>
+       <width>131</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>Upsampling</string>
+     </property>
+    </widget>
+   </widget>
    <zorder>label_tela</zorder>
    <zorder>groupBox_cores</zorder>
    <zorder>pushButton_depthmap</zorder>
    <zorder>pushButton_alldepthmaps</zorder>
-   <zorder>pushButton_upsampling</zorder>
    <zorder>l_ang_hoz</zorder>
    <zorder>l_ang_ver</zorder>
    <zorder>label_hist</zorder>
@@ -1396,7 +1456,8 @@ Interest</string>
    <zorder>radioButton_original</zorder>
    <zorder>radioButton_maximizar</zorder>
    <zorder>label_text_exibicao</zorder>
-   <zorder>frame</zorder>
+   <zorder>frame_roi</zorder>
+   <zorder>frame_upsampling</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
