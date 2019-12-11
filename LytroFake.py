@@ -41,19 +41,19 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ang_ver = 0
         self.pathToPpms = "/home/paulo/Downloads/lf_datasets/Fountain_Vincent2/Fountain_Vincent2"
         # Caminho so para testes, default=""
-        #self.pathToPpms = ""
-
-        if self.pathToPpms:
-            self.ang_hor = 7
-            self.ang_ver = 7
-            self.openppms()
+        self.pathToPpms = ""
 
         self.grid_x = 261
         self.grid_y = 62
         self.grid_w = 150
         self.grid_h = 150
-        
+
         self.resetUi()
+
+        if self.pathToPpms:
+            self.ang_hor = 7
+            self.ang_ver = 7
+            self.openppms()
 
         #self.dialog = Janela(self)
     
@@ -63,7 +63,7 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setScreenText()
         self.actionOpen.triggered.connect(self.openFile)
         # Sinais
-        self.pushButton_reset.clicked.connect(self.resetUi)
+        self.pushButton_reset.clicked.connect(self.buttonReset)
         self.pushButton_depthmap.clicked.connect(self.buttonDepthMap)
         #self.pushButton_up2x.clicked.connect(self.buttonUpscaling2x)
         #self.pushButton_up4x.clicked.connect(self.buttonUpscaling4x)
@@ -77,17 +77,17 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.radioButton_maximizar.clicked.connect(self.loadppm)
         self.radioButton_original.clicked.connect(self.loadppm)
         #self.pushButton_roi_zigzag.clicked.connect(self.teste_janela)
-        self.loadppm()
 
 
     def openFile(self):
         s = QFileDialog.getExistingDirectory(self, "Open a folder", "./")
         self.pathToPpms = str(s)
-        self.resetUi()
         self.ang_hor = 7
         self.ang_ver = 7
         self.setScreenText()
         self.openppms()
+        self.resetUi()
+        self.loadppm()
         self.update()
 
 
@@ -192,6 +192,11 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 # ****************************************** BOTÕES ******************************************* #
+    def buttonReset(self):
+        self.resetUi()
+        self.loadppm()
+
+
     def buttonDepthMap(self):
         img1 = QtGui.QPixmap(self.pathToPpms + "/002_007.ppm")
         img2 = QtGui.QPixmap(self.pathToPpms + "/009_007.ppm")
