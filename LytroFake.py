@@ -7,15 +7,18 @@ import sys
 import os
 import qimage2ndarray
 import numpy as np
+import time
 
 # My GUI frames
 from frames.mainframe import Ui_MainWindow as Ui_MainWindow
-from frames.viewframe import Ui_MainWindow as Ui_ViewWindow
+from frames.viewframe1 import Ui_MainWindow as Ui_ViewWindow1
+from frames.viewframe3 import Ui_MainWindow as Ui_ViewWindow3
 # My Functions
 import functions.utils as utils
 import functions.img_manipulation as im
 import functions.upsampling as us
 import functions.mosca_window as mw
+import functions.roi as roi
 
 
 
@@ -26,13 +29,60 @@ def main():
     sys.exit(app.exec_())
 
 
-class ViewFrame(QtWidgets.QMainWindow, Ui_ViewWindow):
+class ViewFrame1(QtWidgets.QMainWindow, Ui_ViewWindow1):
     def __init__(self, parent=None):
-        super(ViewFrame, self).__init__(parent)
+        super(ViewFrame1, self).__init__(parent)
         self.setupUi(self)
 
     def show_image(self, img):
         self.label_tela.setPixmap(img.scaled(901,626,aspectRatioMode =1))
+        self.update()
+
+
+class ViewFrame3(QtWidgets.QMainWindow, Ui_ViewWindow3):
+    def __init__(self, parent=None):
+        super(ViewFrame3, self).__init__(parent)
+        self.setupUi(self)
+        self.img1 = []
+        self.img2 = []
+        self.img3 = []
+        self.idx = 0
+        self.pushButton_left.clicked.connect(self.buttonLeft)
+        self.pushButton_right.clicked.connect(self.buttonRight)
+
+
+    def initialize(self, img1, img_frames, img_diff):
+        self.img1 = img1
+        self.img2 = img_frames
+        self.img3 = img_diff
+
+
+    def show_image_roi(self, idx):
+        self.label_tela_1.setPixmap(self.img1.scaled(441,321,aspectRatioMode =1))
+        self.label_tela_2.setPixmap(self.img2[idx].scaled(441,321,aspectRatioMode =1))
+        self.label_tela_3.setPixmap(self.img3[idx].scaled(441,321,aspectRatioMode =1))
+
+    def buttonLeft(self):
+        if self.idx > 0:
+            self.idx -= 1
+        else:
+            self.idx = len(self.img2)-1
+        self.show_image_roi(self.idx)
+
+    def buttonRight(self):
+        if self.idx < len(self.img2)-1:
+            self.idx += 1
+        else:
+            self.idx = 0
+        self.show_image_roi(self.idx)
+
+    def keyPressEvent(self,event):
+        if event.key() == QtCore.Qt.Key_Left:
+            self.buttonLeft()
+        if event.key() == QtCore.Qt.Key_Right:
+            self.buttonRight()
+        self.update()
+
 
 
 class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -43,9 +93,9 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.matrix_rgb = [[0 for x in range(15)]for y in range(15)]  # Matriz que guarda todos os ppms em rgb_view
         self.ang_hor = 0
         self.ang_ver = 0
-        self.pathToPpms = "/home/thiago/Mestrado_cadeiras/Lytro_fake/Fountain_Vincent2"
+        self.pathToPpms = "/home/paulo/Downloads/lf_datasets/Bikes"
         # Caminho so para testes, default=""
-        #self.pathToPpms = ""
+        self.pathToPpms = ""
 
         self.grid_x = 261
         self.grid_y = 62
@@ -59,8 +109,7 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             self.ang_ver = 7
             self.openppms()
 
-        self.viewframe = ViewFrame(self)
-        self.buttonDepthMap()
+
     
 
     def resetUi(self):
@@ -72,6 +121,7 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_depthmap.clicked.connect(self.buttonDepthMap)
         self.pushButton_microimagens.clicked.connect(self.buttonFlyView)
         self.pushButton_upsampling.clicked.connect(self.buttonUpsampling)
+        self.pushButton_roi.clicked.connect(self.buttonRoi)
         self.slider_brilho.valueChanged.connect(self.loadppm)
         self.slider_contraste.valueChanged.connect(self.loadppm)
         self.slider_saturacao.valueChanged.connect(self.loadppm)
@@ -81,7 +131,6 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.radioButton_blue.clicked.connect(self.loadppm)
         self.radioButton_maximizar.clicked.connect(self.loadppm)
         self.radioButton_original.clicked.connect(self.loadppm)
-        #self.pushButton_roi_zigzag.clicked.connect(self.teste_janela)
 
 
     def openFile(self):
@@ -147,6 +196,35 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         img_mi = qimage2ndarray.array2qimage(img_mi)
         QtGui.QPixmap.fromImage(img_mi).save("visao_de_mosca.png", "PNG")
         print("TERMINOU")
+
+
+    def apply_roi(self):
+        img_diff, img_frames = roi.roi_espiral(self.matrix_rgb)
+        img1 = QtGui.QPixmap.fromImage(qimage2ndarray.array2qimage(self.matrix_rgb[self.ang_hor][self.ang_ver]))
+        for i in range (len(img_diff)):
+            img_diff[i] = QtGui.QPixmap.fromImage(qimage2ndarray.array2qimage(img_diff[i]))
+            img_frames[i] = QtGui.QPixmap.fromImage(qimage2ndarray.array2qimage(img_frames[i]))
+
+        viewframe = ViewFrame3(self)
+        #c_time = time.clock()
+        #idx = 0
+
+        viewframe.initialize(img1, img_frames, img_diff)
+        viewframe.show_image_roi(0)
+        viewframe.show()
+
+        # while True:
+        #     if time.clock() - c_time > 1.:
+        #         i = (i+1)%len(img_frames)
+        #         c_time = time.clock()
+                
+        #     viewframe.show_image_roi(idx)
+        #     viewframe.show()
+        #     self.update()
+
+        #     if time.clock() > 7.:
+        #         break
+
 
 
     def drawGrid(self, qp):   
@@ -215,12 +293,12 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.loadppm()
 
 
-    def buttonDepthMap(self):
-        img1 = QtGui.QPixmap(self.pathToPpms + "/002_007.ppm")
-        img2 = QtGui.QPixmap(self.pathToPpms + "/009_007.ppm")
+    def buttonDepthMap(self, flag):
+        img2 = QtGui.QPixmap(self.pathToPpms + "/002_007.ppm")
+        img1 = QtGui.QPixmap(self.pathToPpms + "/009_007.ppm")
         img3 = QtGui.QPixmap(self.pathToPpms + "/007_007.pgm")
-
-        img  = im.depthmap(qimage2ndarray.rgb_view(img1.toImage()), qimage2ndarray.rgb_view(img2.toImage()), qimage2ndarray.rgb_view(img3.toImage()))
+        # img = qimage2ndarray.rgb_view(img3.toImage())
+        img  = im.depthmap(qimage2ndarray.rgb_view(img1.toImage()), qimage2ndarray.rgb_view(img2.toImage()), qimage2ndarray.rgb_view(img3.toImage()), flag)
         self.to_viewframe(img)
         #QtGui.QPixmap.fromImage(img).save("depth.png", "PNG")
 
@@ -233,10 +311,13 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.radioButton_up4x.isChecked():
                 pass # NOT IMPLEMENTED
 
-
     
     def buttonFlyView(self):
         self.apply_flyview()
+
+
+    def buttonRoi(self):
+        self.apply_roi()
 
 
     def setScreenText (self):
@@ -245,10 +326,11 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
     def to_viewframe(self, img):
+        viewframe = ViewFrame1(self)
         img = qimage2ndarray.array2qimage(img)
         img = QtGui.QPixmap.fromImage(img)
-        self.viewframe.show_image(img)
-        self.viewframe.show()
+        viewframe.show_image(img)
+        viewframe.show()
 
 
 if __name__ == '__main__':

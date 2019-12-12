@@ -56,16 +56,19 @@ def transformations(img_array, f_br, f_co, f_sh, f_sa, cs_r, cs_g, cs_b):
     return np.array(img), data
 
 
-def depthmap(imgL, imgR, depth_map):
+def depthmap(imgL, imgR, depth_map, flag):
     #imgL = cv2.imread('/home/paulo/Downloads/Vistas/007_007.png')  # downscale images for faster processing
     #imgR = cv2.imread('/home/paulo/Downloads/Vistas/mapa_imagens.png')
     imgL = cv2.cvtColor(imgL, cv2.COLOR_BGR2GRAY)
     imgR = cv2.cvtColor(imgR, cv2.COLOR_BGR2GRAY)
+    depth_map = cv2.cvtColor(depth_map, cv2.COLOR_BGR2GRAY)
+
     width = int(imgL.shape[1]* 2) 
     height = int(imgL.shape[0]* 2) 
     dim = (width, height)
     imgL = cv2.resize(imgL, dim, interpolation = cv2.INTER_AREA)
     imgR = cv2.resize(imgR, dim, interpolation = cv2.INTER_AREA)
+    depth_map = cv2.resize(depth_map, dim, interpolation = cv2.INTER_AREA)
 
     # SGBM Parameters -----------------
     window_size = 3                     # wsize default 3; 5; 7 for SGBM reduced size image; 15 for SGBM full size image (1300px and above); 5 Works nicely
@@ -103,9 +106,23 @@ def depthmap(imgL, imgR, depth_map):
     filteredImg = cv2.normalize(src=filteredImg, dst=filteredImg, beta=0, alpha=255, norm_type=cv2.NORM_MINMAX);
     filteredImg = np.uint8(filteredImg)
 
-    filteredImg = cv2.bitwise_or(filteredImg,depth_map)
+    for i in range (0, len(filteredImg)):
+        for j in range (0, len(filteredImg[i])):
+            if filteredImg[i][j] > 100:
+                filteredImg[i][j]= 100 
 
-    return filteredImg
+    for i in range (0, len(filteredImg)):
+        for j in range (0, len(filteredImg[i])):
+            filteredImg[i][j] = ((filteredImg[i][j]*0.25) + (depth_map[i][j]*0.75))
+            #filteredImg[i][j] = depth_map[i][j]
+
+
+    if flag == 1:
+        return cv2.bitwise_or(filteredImg,depth_map)
+    elif flag == 2:
+        return cv2.bitwise_xor(filteredImg,depth_map)
+    else:
+        return filteredImg
 
     cv2.imshow('Disparity Map', filteredImg)
     #cv2.imwrite("mapa.png", filteredImg)

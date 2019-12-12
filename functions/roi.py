@@ -14,7 +14,7 @@ def roi_espiral(matrix_SAIs):
 
     first_gray = cv2.cvtColor(img_array[0], cv2.COLOR_BGR2GRAY)
     first_gray = cv2.GaussianBlur(first_gray, (5,5), 0)
-    cv2.imwrite("0.png", img_array[0])
+    #cv2.imwrite("0.png", img_array[0])
 
     diffs = []
     for index, frame in enumerate(img_array):
@@ -25,7 +25,7 @@ def roi_espiral(matrix_SAIs):
             difference = cv2.absdiff(first_gray, gray_frame)
             _, difference = cv2.threshold(difference, 15, 255, cv2.THRESH_BINARY)
 
-            cv2.imwrite("Frames/" + str(index) + ".png", frame)
+            #cv2.imwrite("Frames/" + str(index) + ".png", frame)
             diffs.append(difference)
 
     return diffs, img_array[1:]
