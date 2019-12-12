@@ -4,7 +4,7 @@ import statistics
 import cv2
 
 def upsampling(Sais, posCentral, times=2):
-    shape = Sais[0].shape
+    shape = Sais[0][0].shape
     new_Sais = []
 
     new_Sais.append(Sais[posCentral[0]-1][posCentral[1]-1])
@@ -34,6 +34,8 @@ def upsampling(Sais, posCentral, times=2):
                 #Fourth Pixel
                 new_image_np[i+1][j+1][color] = (int((new_Sais[4])[i//2][j//2][color]) + int((new_Sais[5])[i//2][j//2][color]) + int((new_Sais[7])[i//2][j//2][color]) + int((new_Sais[8 ])[i//2][j//2][color]))//4
     
+    return new_image_np
+
     upsampled_image = Image.fromarray(new_image_np, 'RGB')
     upsampled_image.save('upsampled_LF.png')
     img = cv2.imread('upsampled_LF.png')

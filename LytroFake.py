@@ -12,7 +12,7 @@ import numpy as np
 from frames.mainframe import Ui_MainWindow as Ui_MainWindow
 from frames.viewframe import Ui_MainWindow as Ui_ViewWindow
 # My Functions
-import functions.utils
+import functions.utils as utils
 import functions.img_manipulation as im
 import functions.upsampling as us
 import functions.mosca_window as mw
@@ -45,7 +45,7 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ang_ver = 0
         self.pathToPpms = "/home/paulo/Downloads/lf_datasets/Bikes"
         # Caminho so para testes, default=""
-        #self.pathToPpms = ""
+        self.pathToPpms = ""
 
         self.grid_x = 261
         self.grid_y = 62
@@ -71,6 +71,7 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_reset.clicked.connect(self.buttonReset)
         self.pushButton_depthmap.clicked.connect(self.buttonDepthMap)
         self.pushButton_microimagens.clicked.connect(self.buttonFlyView)
+        self.pushButton_upsampling.clicked.connect(self.buttonUpsampling)
         self.slider_brilho.valueChanged.connect(self.loadppm)
         self.slider_contraste.valueChanged.connect(self.loadppm)
         self.slider_saturacao.valueChanged.connect(self.loadppm)
@@ -128,7 +129,6 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         f_sh = (self.spinBox_nitidez.value()+100)/100.
         f_sa = (self.spinBox_saturacao.value()+100)/100.
         img, hist = im.transformations(img, f_br, f_co, f_sh, f_sa, self.radioButton_red.isChecked(), self.radioButton_green.isChecked(), self.radioButton_blue.isChecked())
-        #self.matrix_rgb[self.ang_hor][self.ang_ver] = img
         img  = qimage2ndarray.array2qimage(img)
         hist = qimage2ndarray.array2qimage(hist)
         hist = hist.copy(80, 58, 496, 370)
@@ -223,30 +223,18 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         #QtGui.QPixmap.fromImage(img).save("depth.png", "PNG")
 
 
-    def buttonUpscaling2x(self):
-        self.upscaling(2)
+    def buttonUpsampling(self):
+        if utils.isValidSAI(self.ang_hor, self.ang_ver):
+            if self.radioButton_up2x.isChecked():
+                img = us.upsampling(self.matrix_rgb, (self.ang_hor, self.ang_ver), 2)
+                self.to_viewframe(img)
+            if self.radioButton_up4x.isChecked():
+                pass # NOT IMPLEMENTED
 
-    
-    def buttonUpscaling4x(self):
-        self.upscaling(4)
 
     
     def buttonFlyView(self):
         self.apply_flyview()
-
-
-    def upscaling(self, x):
-        if utils.isValidSAI(self.ang_hor, self.ang_ver):
-            #sai_it = 0
-            l = []
-            for y in range (self.ang_ver-1, self.ang_ver+2):
-                for x in range (self.ang_hor-1, self.ang_hor+2):
-                    img = QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(x))) + "_" + ("{0:0>3}".format(str(y))) + ".ppm")
-                    l.append(qimage2ndarray.rgb_view(img.toImage()))
-                    #sai_it = sai_it + 1
-            # Chama Funcao Upscaling
-            us.upsampling(l, 2)
-
 
 
     def setScreenText (self):
