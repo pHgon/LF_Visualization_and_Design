@@ -43,9 +43,9 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.matrix_rgb = [[0 for x in range(15)]for y in range(15)]  # Matriz que guarda todos os ppms em rgb_view
         self.ang_hor = 0
         self.ang_ver = 0
-        self.pathToPpms = "/home/paulo/Downloads/lf_datasets/Bikes"
+        self.pathToPpms = "/home/thiago/Mestrado_cadeiras/Lytro_fake/Fountain_Vincent2"
         # Caminho so para testes, default=""
-        self.pathToPpms = ""
+        #self.pathToPpms = ""
 
         self.grid_x = 261
         self.grid_y = 62
@@ -60,7 +60,7 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             self.openppms()
 
         self.viewframe = ViewFrame(self)
-        
+        self.buttonDepthMap()
     
 
     def resetUi(self):
@@ -218,7 +218,9 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
     def buttonDepthMap(self):
         img1 = QtGui.QPixmap(self.pathToPpms + "/002_007.ppm")
         img2 = QtGui.QPixmap(self.pathToPpms + "/009_007.ppm")
-        img  = im.depthmap(qimage2ndarray.rgb_view(img1.toImage()), qimage2ndarray.rgb_view(img2.toImage()))
+        img3 = QtGui.QPixmap(self.pathToPpms + "/007_007.pgm")
+
+        img  = im.depthmap(qimage2ndarray.rgb_view(img1.toImage()), qimage2ndarray.rgb_view(img2.toImage()), qimage2ndarray.rgb_view(img3.toImage()))
         self.to_viewframe(img)
         #QtGui.QPixmap.fromImage(img).save("depth.png", "PNG")
 

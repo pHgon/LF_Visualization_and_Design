@@ -56,7 +56,7 @@ def transformations(img_array, f_br, f_co, f_sh, f_sa, cs_r, cs_g, cs_b):
     return np.array(img), data
 
 
-def depthmap(imgL, imgR):
+def depthmap(imgL, imgR, depth_map):
     #imgL = cv2.imread('/home/paulo/Downloads/Vistas/007_007.png')  # downscale images for faster processing
     #imgR = cv2.imread('/home/paulo/Downloads/Vistas/mapa_imagens.png')
     imgL = cv2.cvtColor(imgL, cv2.COLOR_BGR2GRAY)
@@ -103,6 +103,7 @@ def depthmap(imgL, imgR):
     filteredImg = cv2.normalize(src=filteredImg, dst=filteredImg, beta=0, alpha=255, norm_type=cv2.NORM_MINMAX);
     filteredImg = np.uint8(filteredImg)
 
+    filteredImg = cv2.bitwise_or(filteredImg,depth_map)
 
     return filteredImg
 
