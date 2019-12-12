@@ -830,7 +830,7 @@
    <widget class="QPushButton" name="pushButton_depthmap">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>10</x>
       <y>430</y>
       <width>131</width>
       <height>61</height>
@@ -843,10 +843,10 @@
      <string>DepthMap</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_alldepthmaps">
+   <widget class="QPushButton" name="pushButton_disparidade">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>160</x>
       <y>430</y>
       <width>131</width>
       <height>61</height>
@@ -1441,10 +1441,52 @@ Interest</string>
      </property>
     </widget>
    </widget>
+   <widget class="QPushButton" name="pushButton_microimagens">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>430</y>
+      <width>131</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Ubuntu</family>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+      <kerning>true</kerning>
+     </font>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::DefaultContextMenu</enum>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string>All MicroImages</string>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+   </widget>
    <zorder>label_tela</zorder>
    <zorder>groupBox_cores</zorder>
    <zorder>pushButton_depthmap</zorder>
-   <zorder>pushButton_alldepthmaps</zorder>
+   <zorder>pushButton_disparidade</zorder>
    <zorder>l_ang_hoz</zorder>
    <zorder>l_ang_ver</zorder>
    <zorder>label_hist</zorder>
@@ -1458,6 +1500,7 @@ Interest</string>
    <zorder>label_text_exibicao</zorder>
    <zorder>frame_roi</zorder>
    <zorder>frame_upsampling</zorder>
+   <zorder>pushButton_microimagens</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

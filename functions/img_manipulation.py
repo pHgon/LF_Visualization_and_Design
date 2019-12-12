@@ -102,7 +102,10 @@ def depthmap(imgL, imgR):
      
     filteredImg = cv2.normalize(src=filteredImg, dst=filteredImg, beta=0, alpha=255, norm_type=cv2.NORM_MINMAX);
     filteredImg = np.uint8(filteredImg)
-    #return filteredImg
+
+
+    return filteredImg
+
     cv2.imshow('Disparity Map', filteredImg)
     #cv2.imwrite("mapa.png", filteredImg)
     cv2.waitKey()

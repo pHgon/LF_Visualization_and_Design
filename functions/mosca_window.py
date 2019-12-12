@@ -5,11 +5,49 @@
 # import os
 # from .frames.moscaview import Ui_DmoscaView
 import qimage2ndarray
-from . import img_manipulation as im
 from . import utils
 import numpy as np
+ 
+def mosca_window(img_matrix, scale):
+    a = []
+    width = 625
+    height = 434
+    if scale == 1:
+        width = 625
+        height = 434
+    if scale == 0.5:
+        width = 123
+        height = 86
+        
+    for h in range(height):
+        for w in range(width):
+            a.append(np.empty([15,15,3]))   
+        
+    for i in range(15):
+        for j in range(15):
+            img_a = img_matrix[i][j]
+            for h in range(height):
+                for w in range(width):
+              
+                    a[h*width + w][i][j] = img_a[h][w]
 
-# class MoscaWindow(QtWidgets.QDialog, Ui_DmoscaView):
+    aux = 0
+    for h in range(height):
+        npa = a[h*width]
+        for w in range(width):
+            if w > 0:
+                npa = np.concatenate((npa, a[h*width + w]), axis=1)
+        if aux == 0:
+            img_mosca = npa 
+            aux = 1
+        else:   
+            img_mosca = np.concatenate((img_mosca, npa))
+
+    return img_mosca
+
+
+
+    # class MoscaWindow(QtWidgets.QDialog, Ui_DmoscaView):
 #     def __init__(self, parent=None):
 #         super(MoscaWindow, self).__init__(parent)
 #         self.setupUi(self)
@@ -74,48 +112,3 @@ import numpy as np
 
 # if __name__ == '__main__':
 #     main()
-
-
-
- 
-def loadMV(path, scale):
-    a = []
-    width = 625
-    height = 434
-    if scale == 1:
-        width = 625
-        height = 434
-    if scale == 0.5:
-        width = 123
-        height = 86
-    for h in range(height):
-        for w in range(width):
-            a.append(np.empty([15,15,3]))    
-        
-    for i in range(15):
-        for j in range(15):
-            act_img = QtGui.QPixmap(path + "/" + ("{0:0>3}".format(i) + "_" + ("{0:0>3}".format(j)) + ".ppm")).scaled(width, height, aspectRatioMode=1)
-            img_a = qimage2ndarray.rgb_view(act_img.toImage())
-            for h in range(height):
-                for w in range(width):
-              
-                    a[h*width + w][i][j] = img_a[h][w]
-
-    aux = 0
-    for h in range(height):
-        npa = a[h*width]
-        for w in range(width):
-            if w > 0:
-                npa = np.concatenate((npa, a[h*width + w]), axis=1)
-        if aux == 0:
-            img_mosca = npa 
-            aux = 1
-        else:    
-            img_mosca = np.concatenate((img_mosca, npa))
-
-
-    img_m = qimage2ndarray.array2qimage(img_mosca)
-     
-   
-    QtGui.QPixmap.fromImage(img_m).save("visao_de_mosca.png", "PNG")
-    #self.labelMosca.setPixmap(QtGui.QPixmap.fromImage(img_m).scaled(img_width, img_height, aspectRatioMode=1))
