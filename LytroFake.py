@@ -8,6 +8,7 @@ import os
 import qimage2ndarray
 import numpy as np
 import time
+import math
 
 # My GUI frames
 from frames.mainframe import Ui_MainWindow as Ui_MainWindow
@@ -19,6 +20,7 @@ import functions.img_manipulation as im
 import functions.upsampling as us
 import functions.mosca_window as mw
 import functions.roi as roi
+import functions.depthmap as dm
 
 
 
@@ -50,12 +52,10 @@ class ViewFrame3(QtWidgets.QMainWindow, Ui_ViewWindow3):
         self.pushButton_left.clicked.connect(self.buttonLeft)
         self.pushButton_right.clicked.connect(self.buttonRight)
 
-
     def initialize(self, img1, img_frames, img_diff):
         self.img1 = img1
         self.img2 = img_frames
         self.img3 = img_diff
-
 
     def show_image_roi(self, idx):
         self.label_tela_1.setPixmap(self.img1.scaled(441,321,aspectRatioMode =1))
@@ -84,7 +84,6 @@ class ViewFrame3(QtWidgets.QMainWindow, Ui_ViewWindow3):
         self.update()
 
 
-
 class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainFrame, self).__init__(parent)
@@ -94,8 +93,9 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ang_hor = 0
         self.ang_ver = 0
         self.pathToPpms = "/home/paulo/Downloads/lf_datasets/Bikes"
+        #self.pathToPpms = "/home/paulo/Git-Repository/LF_Visualization_and_Design/pngs"
         # Caminho so para testes, default=""
-        self.pathToPpms = ""
+        #self.pathToPpms = ""
 
         self.grid_x = 261
         self.grid_y = 62
@@ -108,8 +108,6 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             self.ang_hor = 7
             self.ang_ver = 7
             self.openppms()
-
-
     
 
     def resetUi(self):
@@ -121,6 +119,7 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_depthmap.clicked.connect(self.buttonDepthMap)
         self.pushButton_microimagens.clicked.connect(self.buttonFlyView)
         self.pushButton_upsampling.clicked.connect(self.buttonUpsampling)
+        self.pushButton_disparidade.clicked.connect(self.buttonDisparity)
         self.pushButton_roi.clicked.connect(self.buttonRoi)
         self.slider_brilho.valueChanged.connect(self.loadppm)
         self.slider_contraste.valueChanged.connect(self.loadppm)
@@ -133,23 +132,36 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.radioButton_original.clicked.connect(self.loadppm)
 
 
-    def openFile(self):
+    def openFile(self, idx):
         s = QFileDialog.getExistingDirectory(self, "Open a folder", "./")
-        self.pathToPpms = str(s)
-        self.ang_hor = 7
-        self.ang_ver = 7
-        self.setScreenText()
-        self.openppms()
-        self.resetUi()
-        self.loadppm()
-        self.update()
+        if (s):
+            self.pathToPpms = str(s)
+            self.ang_hor = 7
+            self.ang_ver = 7
+            self.setScreenText()
+            self.openppms()
+            self.resetUi()
+            self.loadppm()
+            self.update()
 
+
+    def foundFileName(self, path, x, y):
+        types = ["{0:0>2}", "{0:0>3}"]
+        extensions = ["ppm", "png", "jpg", "svn"]
+
+        for ext in extensions:
+            for t in types:
+                s = path + "/" + (t.format(str(x))) + "_" + (t.format(str(y))) + "." + ext
+                if os.path.exists(s):
+                    return s
+                
 
     # Carrega todos os ppms e indexa na matriz
     def openppms(self):
         for y in range(0,15):
             for x in range (0,15):
-                self.matrix_rgb[x][y] = qimage2ndarray.rgb_view(QtGui.QPixmap(self.pathToPpms + "/" + ("{0:0>3}".format(str(x))) + "_" + ("{0:0>3}".format(str(y))) + ".ppm").toImage())
+                qp = QtGui.QPixmap(self.foundFileName(self.pathToPpms, x, y)).toImage()
+                self.matrix_rgb[x][y] = qimage2ndarray.rgb_view(qp)
         self.loadppm()
 
 
@@ -193,9 +205,10 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
                 matrix_aux[i][j] = qimage2ndarray.rgb_view(img_aux)
 
         img_mi = mw.mosca_window(matrix_aux, 0.5)
-        img_mi = qimage2ndarray.array2qimage(img_mi)
-        QtGui.QPixmap.fromImage(img_mi).save("visao_de_mosca.png", "PNG")
-        print("TERMINOU")
+        #img_mi = qimage2ndarray.array2qimage(img_mi)
+
+        self.to_viewframe(img_mi)
+        QtGui.QPixmap.fromImage(qimage2ndarray.array2qimage(img_mi)).save("visao_de_mosca.png", "PNG")
 
 
     def apply_roi(self):
@@ -206,40 +219,32 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             img_frames[i] = QtGui.QPixmap.fromImage(qimage2ndarray.array2qimage(img_frames[i]))
 
         viewframe = ViewFrame3(self)
-        #c_time = time.clock()
-        #idx = 0
 
         viewframe.initialize(img1, img_frames, img_diff)
         viewframe.show_image_roi(0)
         viewframe.show()
 
-        # while True:
-        #     if time.clock() - c_time > 1.:
-        #         i = (i+1)%len(img_frames)
-        #         c_time = time.clock()
+
+    def apply_disparity(self):
+        s1, s2 = "", ""
+        m1 = [[0 for x in range(15)]for y in range(15)]
+        m2 = [[0 for x in range(15)]for y in range(15)]
+
+        s1 = str(QFileDialog.getExistingDirectory(self, "Open the FIRST folder", "./"))
+        if s1:
+            s2 = str(QFileDialog.getExistingDirectory(self, "Open the SECOND folder", "./"))
+            if s2:
+                for y in range(0,15):
+                    for x in range (0,15):
+                        QtGui.QPixmap(self.foundFileName(self.pathToPpms, x, y))
+                        m1[x][y] = qimage2ndarray.rgb_view(QtGui.QPixmap(self.foundFileName(s1, x, y)).toImage())
+                        m2[x][y] = qimage2ndarray.rgb_view(QtGui.QPixmap(self.foundFileName(s2, x, y)).toImage())
+                        self.matrix_rgb[x][y] = im.difference(m1[x][y], m2[x][y])
+
+                self.ang_hor = 7
+                self.ang_ver = 7
+                self.loadppm()
                 
-        #     viewframe.show_image_roi(idx)
-        #     viewframe.show()
-        #     self.update()
-
-        #     if time.clock() > 7.:
-        #         break
-
-
-
-    def drawGrid(self, qp):   
-        qp.setBrush(QColor(170, 170, 170))
-        qp.drawRect(self.grid_x, self.grid_y, self.grid_w, self.grid_h)
-        for i in range(self.grid_x, self.grid_x + self.grid_w + int(self.grid_h/15), int(self.grid_w/15)):
-            qp.setPen(QColor(0, 0, 0))
-            qp.drawLine(i, self.grid_y, i, self.grid_y + self.grid_h)
-        for i in range(self.grid_y, self.grid_y + self.grid_h + int(self.grid_h/15), int(self.grid_h/15)):
-            qp.setPen(QColor(0, 0, 0))
-            qp.drawLine(self.grid_x, i, self.grid_x + self.grid_w, i)
-        qp.setBrush(QColor(255, 0, 0))
-        if self.pathToPpms:
-            qp.drawRect(self.grid_x + int(self.grid_w/15)*self.ang_hor, self.grid_y + int(self.grid_h/15)*self.ang_ver, int(self.grid_w/15), int(self.grid_h/15))
-    
     
 # ******************************************* EVENTOS ******************************************* #
     def paintEvent(self, e):
@@ -297,8 +302,7 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         img2 = QtGui.QPixmap(self.pathToPpms + "/002_007.ppm")
         img1 = QtGui.QPixmap(self.pathToPpms + "/009_007.ppm")
         img3 = QtGui.QPixmap(self.pathToPpms + "/007_007.pgm")
-        # img = qimage2ndarray.rgb_view(img3.toImage())
-        img  = im.depthmap(qimage2ndarray.rgb_view(img1.toImage()), qimage2ndarray.rgb_view(img2.toImage()), qimage2ndarray.rgb_view(img3.toImage()), flag)
+        img  = dm.depthmap(qimage2ndarray.rgb_view(img1.toImage()), qimage2ndarray.rgb_view(img2.toImage()), qimage2ndarray.rgb_view(img3.toImage()), flag)
         self.to_viewframe(img)
         #QtGui.QPixmap.fromImage(img).save("depth.png", "PNG")
 
@@ -308,6 +312,7 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.radioButton_up2x.isChecked():
                 img = us.upsampling(self.matrix_rgb, (self.ang_hor, self.ang_ver), 2)
                 self.to_viewframe(img)
+                QtGui.QPixmap.fromImage(qimage2ndarray.array2qimage(img)).save("upsampling.png", "PNG")
             if self.radioButton_up4x.isChecked():
                 pass # NOT IMPLEMENTED
 
@@ -319,10 +324,30 @@ class MainFrame(QtWidgets.QMainWindow, Ui_MainWindow):
     def buttonRoi(self):
         self.apply_roi()
 
+    
+    def buttonDisparity(self):
+        #QtGui.QPixmap.fromImage(img).save("pngs/" + "{0:0>3}".format(str(x)) + "_" + "{0:0>3}".format(str(y)) + ".png", "PNG")
+        self.apply_disparity()
+
+    # ********************************************************************************************* #
 
     def setScreenText (self):
         self.l_ang_hoz.setText("x: " + "{0:0>2}".format(str(self.ang_hor)))
         self.l_ang_ver.setText("y: " + "{0:0>2}".format(str(self.ang_ver)))
+
+
+    def drawGrid(self, qp):   
+        qp.setBrush(QColor(170, 170, 170))
+        qp.drawRect(self.grid_x, self.grid_y, self.grid_w, self.grid_h)
+        for i in range(self.grid_x, self.grid_x + self.grid_w + int(self.grid_h/15), int(self.grid_w/15)):
+            qp.setPen(QColor(0, 0, 0))
+            qp.drawLine(i, self.grid_y, i, self.grid_y + self.grid_h)
+        for i in range(self.grid_y, self.grid_y + self.grid_h + int(self.grid_h/15), int(self.grid_h/15)):
+            qp.setPen(QColor(0, 0, 0))
+            qp.drawLine(self.grid_x, i, self.grid_x + self.grid_w, i)
+        qp.setBrush(QColor(255, 0, 0))
+        if self.pathToPpms:
+            qp.drawRect(self.grid_x + int(self.grid_w/15)*self.ang_hor, self.grid_y + int(self.grid_h/15)*self.ang_ver, int(self.grid_w/15), int(self.grid_h/15))
 
 
     def to_viewframe(self, img):
